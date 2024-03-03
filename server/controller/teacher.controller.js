@@ -5,30 +5,36 @@ const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.t_first_name) {
-    res.status(400).send({
-      message: "Content can not be empty!",
-    });
-    return;
-  }
+  // if (!req.body.firstName || !req.body.lastName || !req.body.active) {
+  //   res.status(400).send({
+  //     message: "Please fill all required fields cannot be empty!",
+  //   });
+  //   return;
+  // }
 
   // Create a Tutorial
   const teacher = {
-    t_first_name: req.body.t_first_name,
-    t_last_name: req.body.t_last_name,
-    t_active: req.body.active,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    active: req.body.active,
   };
+
+  if (
+    teacher.firstName.length === 0 ||
+    teacher.lastName.length === 0 
+  ) {
+    return res.status(404).send({ validation: "fields cannot be empty..." });
+  }
 
   // Save Tutorial in the database
   Teachers.create(teacher)
     .then((data) => {
-      const results = JSON.stringify(data);
-      res.status(200).send(results);
+      res.status(200).send(data);
     })
     .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Teacher.",
+      res.status(501).send({
+        error:
+          err.message
       });
     });
 };
@@ -40,16 +46,16 @@ exports.findAll = (req, res) => {
 
   Teachers.findAll()
     .then((data) => {
-      if (!data || data === null || data === undefined) {
-        res.send({ message: "No Teachers exist to list." });
+      if (!data) {
+        res.status(404).send({ results: "No Teachers exist to list." });
       }
-      res.send(data);
+      
+      res.status(200).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while retrieving the Teacher(s) info.",
+        error:
+          err.message
       });
     });
 };
@@ -64,13 +70,13 @@ exports.findOne = (req, res) => {
         res.send(data);
       } else {
         res.status(404).send({
-          message: `Cannot find Teacher with the given id = ${id}.`,
+          results: `Cannot find Teacher with the given id = ${id}.`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error retrieving Teacher with id=" + id,
+        error: err,
       });
     });
 };
@@ -82,20 +88,20 @@ exports.update = (req, res) => {
   Teachers.update(req.body, {
     where: { id: id },
   })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Teacher info was updated successfully.",
+    .then((data) => {
+      if (data) {
+        res.status(203).send({
+          results: "Teacher info was updated successfully.",
         });
       } else {
-        res.send({
-          message: `Cannot update Teachers info with id=${id}. Maybe Teacher was not found in database or req.body is empty!`,
+        res.status(404).send({
+          results: `Cannot find Teacher with given id=${id}.`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating Teacher with id=" + id,
+        error: "Error updating Teacher with id=" + id,
       });
     });
 };
@@ -110,17 +116,17 @@ exports.delete = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Teacher was deleted from database successfully!",
+          results: "Teacher was deleted from database successfully!",
         });
       } else {
         res.send({
-          message: `Cannot delete Teacher with id=${id}. Maybe School was not found in database!`,
+          results: `Cannot delete Teacher with id=${id}. Maybe School was not found in database!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete Teacher with id=" + id,
+        error: "Could not delete Teacher with id=" + id,
       });
     });
 };
@@ -132,28 +138,38 @@ exports.deleteAll = (req, res) => {
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} Teachers were deleted successfully!` });
+      res.send({ results: `${nums} Teachers were deleted successfully!` });
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while removing all Teachers from database.",
+        error:
+          err.message
       });
     });
 };
 
 // Find all published Teachers
 exports.findAllActive = (req, res) => {
-  Teachers.findAll({ where: { t_active: true } })
+  Teachers.findAll({ where: { active: true } })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while retrieving Teachers from database.",
+        error:
+          err.message
+      });
+    });
+};
+exports.findAllInActive = (req, res) => {
+  Teachers.findAll({ where: { active: false } })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        error:
+          err.message
       });
     });
 };

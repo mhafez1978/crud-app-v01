@@ -138,7 +138,7 @@ exports.deleteAll = (req, res) => {
       res.status(500).send({
         message:
           err.message ||
-          "Some error occurred while removing all Schools from database.",
+          "Some error occurred while removing all Schools listed in the database.",
       });
     });
 };
@@ -147,6 +147,9 @@ exports.deleteAll = (req, res) => {
 exports.findAllActive = (req, res) => {
   Schools.findAll({ where: { active: true } })
     .then((data) => {
+      if (!data || data.length === 0) {
+        res.send({ message: "No Active Schools Found to list!" });
+      }
       res.send(data);
     })
     .catch((err) => {
@@ -154,6 +157,21 @@ exports.findAllActive = (req, res) => {
         message:
           err.message ||
           "Some error occurred while retrieving Schools from database.",
+      });
+    });
+};
+exports.findAllInActive = (req, res) => {
+  Schools.findAll({ where: { active: false } })
+    .then((data) => {
+      if (!data) {
+        res.send({ message: "No inactive Schools were found!" });
+      }
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(404).send({
+        message:
+          err,message
       });
     });
 };

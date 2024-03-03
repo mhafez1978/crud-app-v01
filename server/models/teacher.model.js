@@ -2,13 +2,13 @@ module.exports = (sequelize, Sequelize) => {
   const Teacher = sequelize.define(
     "teachers",
     {
-      t_first_name: {
+      firstName: {
         type: Sequelize.STRING,
       },
-      t_last_name: {
+      lastName: {
         type: Sequelize.STRING,
       },
-      t_active: {
+      active: {
         type: Sequelize.BOOLEAN,
       },
     },
