@@ -1,4 +1,5 @@
 const db = require("../models");
+//const schoolModel = require("../models/school.model");
 const Teachers = db.teachers;
 const Op = db.Sequelize.Op;
 
@@ -14,14 +15,14 @@ exports.create = (req, res) => {
 
   // Create a Tutorial
   const teacher = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    active: req.body.active,
+    ...req.body,
+    schoolId:req.body.schoolId
   };
 
   if (
-    teacher.firstName.length === 0 ||
-    teacher.lastName.length === 0 
+    !teacher.firstName ||
+    !teacher.lastName ||
+    !teacher.schoolId 
   ) {
     return res.status(404).send({ validation: "fields cannot be empty..." });
   }
@@ -33,8 +34,7 @@ exports.create = (req, res) => {
     })
     .catch((err) => {
       res.status(501).send({
-        error:
-          err.message
+        error: err.message,
       });
     });
 };
@@ -46,7 +46,7 @@ exports.findAll = (req, res) => {
 
   Teachers.findAll()
     .then((data) => {
-      if (!data) {
+      if (data.length === 0) {
         res.status(404).send({ results: "No Teachers exist to list." });
       }
       

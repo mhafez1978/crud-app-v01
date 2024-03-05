@@ -2,7 +2,7 @@ module.exports = {
   HOST: "localhost",
   USER: "root",
   PASSWORD: "123456789",
-  DB: "crud-app-v01",
+  DB: "crud-app-v02",
   dialect: "mysql",
   pool: {
     max: 5,

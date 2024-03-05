@@ -40,16 +40,15 @@ exports.findAll = (req, res) => {
 
   Schools.findAll()
     .then((data) => {
-      if (!data || data === null || data === undefined) {
-        res.send({ message: "No schools exist to list." });
+      if (data.length === 0) {
+        res.status(404).send({ results: "No schools exist list, you should create one..." });
       }
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while retrieving the School(s) info.",
+        error:
+          err.message
       });
     });
 };

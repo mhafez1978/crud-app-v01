@@ -23,14 +23,19 @@ module.exports = (app) => {
    *        active:
    *          type: boolean
    *          description: Teacher active status either true or false.
+   *        schoolId:
+   *          type: integer
+   *          description: SchoolId Teacher BelongsTo.
    *      required:
    *        - firstName
    *        - lastName
    *        - active
+   *        - schoolId
    *      example:
    *        firstName: John
    *        lastName: Doe
    *        active: false
+   *        schoolId: 1
    *
    */
 
@@ -62,14 +67,18 @@ module.exports = (app) => {
    *                  type: string
    *                active:
    *                  type: boolean
+   *                schoolId:
+   *                  type: integer
    *              required:
    *                - firstName
    *                - lastName
    *                - active
+   *                - schoolId
    *              example:
    *                firstName: John
    *                lastName: Doe
    *                active: false
+   *                schoolId: 1
    *      responses:
    *       '201':
    *          description: Will show results of created Teacher.
@@ -87,7 +96,7 @@ module.exports = (app) => {
    *  get:
    *      summary: Admin can get an array list of all teachers.
    *      tags: [Teachers]
-   *      description: This EndPoint will allow admin to get an array of all the schools in database.
+   *      description: This EndPoint will allow admin to get an array of all the teachers in database.
    *      responses:
    *       '200':
    *          description: Will show array results of all Teachers in database.
@@ -97,6 +106,11 @@ module.exports = (app) => {
    *                type: array
    *                items:
    *                  $ref: '#/components/schemas/Teacher'
+   *                example:
+   *                  firstName: Mike
+   *                  lastName: Jones
+   *                  active: true
+   *                  
    *
    */
   router.get("/list", teachers.findAll);
@@ -117,6 +131,7 @@ module.exports = (app) => {
    *                type: array
    *                items:
    *                  $ref: '#/components/schemas/Teacher'
+   *
    *
    */
   router.get("/list/active", teachers.findAllActive);

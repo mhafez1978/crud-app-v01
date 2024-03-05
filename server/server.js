@@ -106,10 +106,12 @@ app.get("/api/setup", (req, res) => {
     });
 });
 
-// routes for school model
+
 require("./routes/school.routes")(app);
-//routes for teacher model
 require("./routes/teacher.routes")(app);
+require("./routes/department.routes")(app);
+require("./routes/course.routes.js")(app);
+require("./routes/student.routes.js")(app);
 
 // this is default in case of unmatched routes catch all function
 app.use("*", (req, res) => {
